@@ -1,0 +1,19 @@
+#!/bin/sh
+
+METADMIN_PREFIX="$(
+	cd "$(dirname "$0")"
+	cd ..
+	echo "$PWD"
+)"
+
+export METADMIN_PREFIX
+
+PROFILE="$METADMIN_PREFIX/lib/metadmin/metadmin.sh"
+
+if [ ! -f "$PROFILE" ]; then
+	printf '%s does not exist, exiting\n' >&2
+	exit 1
+fi
+
+exec bash --noprofile --rcfile "$PROFILE"
+
