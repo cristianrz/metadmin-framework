@@ -1,0 +1,18 @@
+#!/bin/sh
+
+PORT="8080"
+ADDR="0.0.0.0"
+DIR=""
+
+options="PORT ADDR DIR"
+
+run(){
+	_log_info "Starting busybox http server..."
+	busybox httpd -h "$DIR" -f -v -p "${ADDR}:${PORT}"
+	err="$?"
+
+	case "$err" in
+		1) _log_err "busybox command failed" ;;
+	esac
+}
+

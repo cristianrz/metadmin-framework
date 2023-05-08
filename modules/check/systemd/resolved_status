@@ -1,0 +1,8 @@
+#!/bin/sh
+
+options=""
+
+run(){
+	resolvectl status
+}
+

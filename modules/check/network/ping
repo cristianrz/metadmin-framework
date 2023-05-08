@@ -1,0 +1,24 @@
+#!/bin/sh
+
+HOST="9.9.9.9"
+COUNT="1"
+TIMEOUT="5"
+
+options="HOST COUNT TIMEOUT"
+
+run(){
+	if [ "$COUNT" -eq 0 ]; then
+		ping -W $TIMEOUT "$HOST"
+		err="$?"
+	else
+		ping -W $TIMEOUT -c "$COUNT" "$HOST"
+		err="$?"
+	fi
+
+	case "$err" in
+		0) _log_info "ping to $HOST succeeded" ;;
+		1) _log_warning "$HOST did not respond to ping" ;;
+		*) _log_err "ping command failed"
+	esac
+}
+

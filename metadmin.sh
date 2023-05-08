@@ -9,7 +9,19 @@ MAF_PS1='\[\e[4m\]maf'"$VERSION_SHORT"'\[\e[0m\]'
 PATH="/bin:/usr/bin"
 MODULES_PATH="$PWD/modules"
 
-_banner() {
+_log_info(){
+	printf '\e[34m\e[1m[*]\e[0m %s\n' "$*"
+}
+
+_log_err(){
+	printf '\e[31m\e[1m[-]\e[0m %s\n' "$*"
+}
+
+_log_warning(){
+	printf '\e[33m\e[1m[-]\e[0m %s\n' "$*"
+}
+
+banner() {
 
 	printf '\n\e[36m'
 	cat <<'EOF'
@@ -32,11 +44,18 @@ _banner() {
                                \\/ \\
 
 EOF
+printf '\e[0m\n'
+cat << EOF
+  Cybersecurity is like a game of chess. Except the board
+  is made of water, the pieces are on fire, and you have no
+  idea what the rules are.
+  
+  - Aristotle
+
+EOF
 	printf '\e[0m\n    =[  \e[33mMetadmin v%s \e[0m  ]\n\n' "$VERSION"
 }
 
-_banner
-unset -f _banner
 
 search() (
 	if [ "$#" -ne 1 ]; then
@@ -51,12 +70,13 @@ search() (
 	echo
 )
 
-use() (
-	cd "$MODULES_PATH"
+use(){
 	module="$1"
+
+	command cd "$MODULES_PATH" || exit 1
 	. "$module"
 	PS1="$MAF_PS1 (\[\e[1m$MAIN_COLOR\]$module\[\e[0m\]) > "
-)
+}
 
 _print_var() {
 	var_name="$1"
@@ -108,11 +128,15 @@ Placeholder
 EOF
 }
 
+### INIT ###
+
 alias cd=""
 
 command cd "$MODULES_PATH"
 
 PS1="$MAF_PS1 > "
-
 module=""
 options=""
+
+banner
+

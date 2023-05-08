@@ -1,0 +1,15 @@
+#!/bin/sh
+
+SERVER="9.9.9.9"
+DOMAIN="linux.org"
+
+options="DOMAIN SERVER"
+
+run(){
+	if nslookup "$DOMAIN" "$SERVER"; then
+		_log_info "got DNS response"
+	else
+		_log_err "DNS query failed"
+	fi
+}
+

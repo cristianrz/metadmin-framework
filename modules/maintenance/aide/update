@@ -1,0 +1,19 @@
+#!/bin/sh
+
+DB="/var/lib/aide/aide.db"
+
+options="DB"
+
+run(){
+	if [ ! -f $DB.new ]; then
+			  _log_err "could not find new aide database in $DB"
+			  return 1
+	fi
+
+	if mv -v $DB.new $DB; then
+		_log_info "aide update successfully"
+	else
+		_log_err "aide update failed"
+	fi
+}
+
