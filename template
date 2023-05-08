@@ -1,0 +1,12 @@
+#!/bin/sh
+
+ZONE=public
+SERVICE=ssh
+
+options="ZONE SERVICE"
+
+run(){
+	firewall-cmd --permanent --zone=$ZONE --service=$SERVICE
+	firewall-cmd --reload
+}
+

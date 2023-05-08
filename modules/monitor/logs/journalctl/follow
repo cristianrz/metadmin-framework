@@ -1,0 +1,10 @@
+#!/bin/sh
+
+SEVERITY="warning"
+
+options="SEVERITY"
+
+run(){
+	journalctl -f -p "$SEVERITY"
+}
+
