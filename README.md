@@ -35,3 +35,21 @@ main commands are:
 
 Detailed instructions coming soon.
 
+## Adding scripts
+
+All scripts are inside `lib/metadmin/modules`. If you create any directory
+inside there and add a script, it will pick it up. Generally scripts have the
+following:
+
+- several environment variables set
+- environment variable `options` contains the names of all of the environment
+  variables in use from that script
+- a `run` function that runs the main commands
+- it is expected that `run` the main takeaways from the command with `_log_err`,
+  `_log_warning` and `_log_info` without the user having to read the full
+  command output.
+
+An example of a script is in `share/metadmin/module-template`.
+
+**Pull requests are accepted for new scripts.**
+
