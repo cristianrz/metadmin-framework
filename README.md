@@ -1,5 +1,7 @@
 # Metadmin
 
+![Main screen](assets/main_screen.png)
+
 Metadmin is a framework similar to Metasploit but for SysAdmin-type tasks.
 There are many commands that even as an experienced engineer are hard to
 remember and need googling from often. Metadmin allows search for common
