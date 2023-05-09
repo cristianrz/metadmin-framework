@@ -15,5 +15,5 @@ if [ ! -f "$PROFILE" ]; then
 	exit 1
 fi
 
-exec bash --noprofile --rcfile "$PROFILE"
+exec bash --noprofile --rcfile "$PROFILE" "$@"
 

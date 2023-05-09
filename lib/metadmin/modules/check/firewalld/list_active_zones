@@ -1,0 +1,11 @@
+#!/bin/sh
+
+options=""
+
+run(){
+	if ! firewall-cmd --get-active-zones; then
+		_log_err "command failed"
+		return 1
+	fi
+}
+

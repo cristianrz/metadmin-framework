@@ -6,7 +6,6 @@ MAIN_COLOR='\e[34m'
 VERSION_SHORT="0"
 VERSION="${VERSION_SHORT}.0.1"
 MAF_PS1='\[\e[4m\]maf'"$VERSION_SHORT"'\[\e[0m\]'
-PATH="/bin:/usr/bin"
 MODULES_PATH="$METADMIN_PREFIX/lib/metadmin/modules"
 
 _log_info() {
@@ -17,13 +16,17 @@ _log_err() {
 	printf '\e[31m\e[1m[-]\e[0m %s\n' "$*"
 }
 
+_log_fatal() {
+	printf '\e[31m\e[1m[-]\e[0m %s\n' "$*"
+	exit 1
+}
+
 _log_warning() {
 	printf '\e[33m\e[1m[-]\e[0m %s\n' "$*"
 }
 
 banner() {
-
-	printf '\n\e[36m'
+	printf '\e[36m'
 	cat <<'EOF'
   
                       _                  _
@@ -44,7 +47,7 @@ banner() {
                                \\/ \\
 
 EOF
-	printf '\e[0m\n'
+	printf '\e[0m'
 	cat <<EOF
   Cybersecurity is like a game of chess. Except the board
   is made of water, the pieces are on fire, and you have no
@@ -53,7 +56,7 @@ EOF
   - Aristotle
 
 EOF
-	printf '\e[0m\n    =[  \e[33mMetadmin v%s \e[0m  ]\n\n' "$VERSION"
+	printf '\e[0m    =[  \e[33mMetadmin v%s \e[0m  ]\n\n' "$VERSION"
 }
 
 search() {
@@ -67,17 +70,27 @@ search() {
 
 	(
 		cd "$MODULES_PATH"
-		find . -type f \( -name "*$1*" -o -path "*$1*" \) | sed 's/^.\//  /g'
+
+		# this will
+		# 1. find all the files containing the expression
+		# 2. remove the ./ from the beginning
+		# 3. highlight the search term
+
+		find . -type f \( -name "*$1*" -o -path "*$1*" \) |
+			sed 's/^.\//  /g' |
+			grep --color=always -e '^' -e "$1"
 	)
 
 	printf '\n'
 }
 
-use() {
-	module="$1"
+_init_module(){
+	. "${MODULES_PATH}/${_maf_module}"
+	PS1="$MAF_PS1 (\[\e[1m$MAIN_COLOR\]$_maf_module\[\e[0m\]) > "
+}
 
-	. "${MODULES_PATH}/${module}"
-	PS1="$MAF_PS1 (\[\e[1m$MAIN_COLOR\]$module\[\e[0m\]) > "
+use() {
+	_maf_module="$1" mafconsole
 }
 
 _print_var() {
@@ -86,20 +99,20 @@ _print_var() {
 	printf "%s\t\t%s\n" "$var_name" "$var_value"
 }
 
-_reset(){
-		PS1="$MAF_PS1 > "
-		module=""
-		options=""
-		unset -f run
+_init_main(){
+	banner
+	PS1="$MAF_PS1 > "
+	_maf_module=""
+	options=""
 }
 
-exit() {
-	if [ "$module" != "" ]; then
-		_reset
-	else
-		command exit
-	fi
-}
+#exit() {
+#	if [ "$_maf_module" != "" ]; then
+#		_reset
+#	else
+#		command exit
+#	fi
+#}
 
 options() {
 	if [ -z "$options" ]; then
@@ -116,7 +129,7 @@ options() {
 	printf '\n'
 }
 
-set() {
+_set() {
 	var_name="$1"
 	var_value="$2"
 	eval "${var_name}='${var_value}'"
@@ -134,10 +147,24 @@ Placeholder
 
 EOF
 }
-
+#
+#
 ### INIT ###
 
-_reset
+command cd "$METADMIN_PREFIX/lib/metadmin/modules"
 
-banner
+alias cd="command_not_found_handle cd"
+alias set="_set"
+
+if [ -n "${_maf_module-}" ]; then
+	if [ ! -f "$_maf_module" ]; then
+		_log_fatal "Failed to load module: $_maf_module"
+	fi
+
+	_init_module
+	return 0
+
+fi
+
+_init_main
 

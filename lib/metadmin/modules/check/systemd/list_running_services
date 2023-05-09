@@ -1,0 +1,11 @@
+#!/bin/sh
+
+options=""
+
+run(){
+	if ! systemctl list-units --type=service --state=running; then
+		_log_err "command failed"
+		return 1
+	fi
+}
+

@@ -2,11 +2,33 @@
 
 ZONE=public
 SERVICE=ssh
+ELEVATE=false
 
-options="ZONE SERVICE"
+options="ZONE SERVICE ELEVATE"
 
 run(){
-	firewall-cmd --permanent --zone=$ZONE --service=$SERVICE
-	firewall-cmd --reload
+	if "$ELEVATE"; then
+		if ! sudo firewall-cmd --permanent --zone=$ZONE --add-service=$SERVICE; then
+			_log_err "adding rule failed"
+			return 1
+		fi
+
+		if ! sudo firewall-cmd --reload; then
+			_log_err "reloading failed"
+			return 1
+		fi
+
+		return 0
+	fi
+
+	if ! firewall-cmd --permanent --zone=$ZONE --add-service=$SERVICE; then
+		_log_err "adding rule failed"
+		return 1
+	fi
+
+	if ! firewall-cmd --reload; then
+		_log_err "reloading failed"
+		return 1
+	fi
 }
 
