@@ -1,6 +1,8 @@
 # Metadmin
 
-<center><img src="assets/main_screen.png" width="600"></center>
+<p align="center">
+  <img src="assets/main_screen.png" width="600">
+</p>
 
 Metadmin is a framework similar to Metasploit but for SysAdmin-type tasks.
 There are many commands that even as an experienced engineer are hard to
